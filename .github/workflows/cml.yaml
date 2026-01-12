@@ -1,0 +1,29 @@
+name: Model-Training
+on: [push]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+          
+      - uses: iterative/setup-cml@v1
+      
+      - name: Train model
+        run: |
+          pip install -r requirements.txt
+          python train.py
+          
+      - name: Write CML Report
+        env:
+          REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Create a report in markdown
+          echo "## Model Metrics" > report.md
+          cat metrics.txt >> report.md
+          
+          # Post the report as a comment on the commit/PR
+          cml comment create report.md
