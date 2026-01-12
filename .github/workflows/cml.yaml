@@ -12,7 +12,7 @@ jobs:
         with:
           python-version: '3.11'
           
-      - uses: iterative/setup-cml@v2  # <--- CHANGE THIS to v2 (Fixes the warning)
+      - uses: iterative/setup-cml@v2  
       
       - name: Train model
         run: |
