@@ -1,5 +1,7 @@
 name: Model-Training
 on: [push]
+permissions: write-all   # <--- ADD THIS LINE (Gives permission to write comments)
+
 jobs:
   run:
     runs-on: ubuntu-latest
@@ -10,7 +12,7 @@ jobs:
         with:
           python-version: '3.9'
           
-      - uses: iterative/setup-cml@v1
+      - uses: iterative/setup-cml@v2  # <--- CHANGE THIS to v2 (Fixes the warning)
       
       - name: Train model
         run: |
@@ -19,11 +21,12 @@ jobs:
           
       - name: Write CML Report
         env:
+          # This connects the CML tool to your GitHub permission token
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # Create a report in markdown
           echo "## Model Metrics" > report.md
           cat metrics.txt >> report.md
           
-          # Post the report as a comment on the commit/PR
+          # Post the report
           cml comment create report.md
